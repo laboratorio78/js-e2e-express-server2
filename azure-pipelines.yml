@@ -17,5 +17,24 @@ steps:
 
 - script: |
     npm install
+  displayName: 'npm install'
+
+- script: |
     npm run build
-  displayName: 'npm install and build'
+  displayName: 'npm build'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: |
+      src/*
+      public/*
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy project files'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    artifactName: e2e-server
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    publishLocation: 'pipeline'
+  displayName: 'Publish npm artifact'
